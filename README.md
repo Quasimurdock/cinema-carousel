@@ -169,6 +169,21 @@ const items = [/* 同上 */];
 （也可在 Actions 页手动触发）。首次使用请在仓库 **Settings → Pages → Build and deployment →
 Source** 选择 **GitHub Actions**。
 
+### Cloudflare Worker 反代（CDN 加速）
+
+`cloudflare/worker.js` 是一个开箱即用的 Cloudflare Worker：用前缀路由把 `/cc/*` 反代到本站
+GitHub Pages，静态资源边缘缓存 24h、HTML 缓存 10 分钟。部署步骤：
+
+1. 登录 [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages → Create →
+   Create Worker**，名字随意（如 `pages-proxy`），Deploy
+2. 点 **Edit code**，把 `cloudflare/worker.js` 全文粘贴进去，Deploy
+3. 访问 `https://<worker 名>.<账户子域>.workers.dev/cc/` 即为加速后的站点
+
+加新项目：在 `ROUTES` 表里加一行 `'前缀': '仓库名'` 重新部署即可。
+
+> 说明：Workers.dev 默认域名在国内的可达性有限；要稳定加速，可在 Cloudflare 中给 Worker
+> 绑定自有域名的 route（见 Cloudflare 文档 "Workers Routes"）。
+
 ## License
 
 [MIT](LICENSE)
