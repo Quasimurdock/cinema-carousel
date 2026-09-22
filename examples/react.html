@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinema Carousel — React 18 CDN 示例</title>
+<link rel="stylesheet" href="../src/cinema-carousel.css">
+<style>
+  html, body { height: 100%; margin: 0; background: #0a0a0a; overflow: hidden; }
+  #root { height: 100%; }
+</style>
+<!-- React 18 UMD + Babel（浏览器内转译 JSX，仅演示用；生产请走打包器） -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="../src/cinema-carousel.core.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- 组件源码：生产项目中改为 import CinemaCarousel from '.../adapters/CinemaCarousel.jsx' -->
+<script type="text/babel" data-presets="react" src="../src/adapters/CinemaCarousel.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const { createRoot } = ReactDOM;
+
+const items = [
+  { src: 'https://picsum.photos/id/1015/1024/1536', title: 'Beyond ordinary.',
+    desc: 'Sharp geometry, bold statements.\nDesigned to command attention.' },
+  { src: 'https://picsum.photos/id/1016/1024/1536', title: 'Soft encounters.',
+    desc: 'Organic forms meet a clear visual language.\nMade to feel a little different.' },
+  { src: 'https://picsum.photos/id/1018/1024/1536', title: 'New dimensions.',
+    desc: 'Depth and perspective in every frame.\nStep into the scene.' },
+  { src: 'https://picsum.photos/id/1025/1024/1536', title: 'In good shape.',
+    desc: 'Form follows feeling.\nContours that carry character.' },
+];
+
+function App() {
+  return (
+    <CinemaCarousel
+      items={items}
+      initialIndex={1}
+      autoplay={4500}
+      onChange={(index) => console.log('active card:', index)}
+    />
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

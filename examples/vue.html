@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinema Carousel — Vue 3 CDN 示例</title>
+<link rel="stylesheet" href="../src/cinema-carousel.css">
+<style>
+  html, body { height: 100%; margin: 0; background: #0a0a0a; overflow: hidden; }
+  #app { height: 100%; }
+</style>
+<!-- Vue 3 全局构建（仅演示用；生产请走打包器 + SFC） -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="../src/cinema-carousel.core.js"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const { createApp, ref, onMounted, onBeforeUnmount } = Vue;
+
+const items = [
+  { src: 'https://picsum.photos/id/1015/1024/1536', title: 'Beyond ordinary.',
+    desc: 'Sharp geometry, bold statements.\nDesigned to command attention.' },
+  { src: 'https://picsum.photos/id/1016/1024/1536', title: 'Soft encounters.',
+    desc: 'Organic forms meet a clear visual language.\nMade to feel a little different.' },
+  { src: 'https://picsum.photos/id/1018/1024/1536', title: 'New dimensions.',
+    desc: 'Depth and perspective in every frame.\nStep into the scene.' },
+  { src: 'https://picsum.photos/id/1025/1024/1536', title: 'In good shape.',
+    desc: 'Form follows feeling.\nContours that carry character.' },
+];
+
+// 演示组件：与 src/adapters/CinemaCarousel.vue（SFC 版）逻辑一致，
+// 生产项目中直接复制 SFC 或通过打包器引入。
+const CinemaCarousel = {
+  props: {
+    items: { type: Array, required: true },
+    initialIndex: { type: Number, default: 0 },
+    autoplay: { type: Number, default: 0 },
+    loop: { type: Boolean, default: false },
+    showControls: { type: Boolean, default: true },
+  },
+  emits: ['change'],
+  setup(props, { emit }) {
+    const index = ref(props.initialIndex);
+    let core = null, unsub = null;
+    const pad2 = (n) => String(n).padStart(2, '0');
+
+    const cardCls = (i) => ({
+      'cc-card': true,
+      'is-active': i === index.value,
+      'is-collapsed': i !== index.value,
+    });
+    const goTo = (i) => core && core.goTo(i, { user: true });
+    const onKey = (dir) => () => core && (dir < 0 ? core.prev({ user: true }) : core.next({ user: true }));
+    const onProgressClick = (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const ratio = (e.clientX - rect.left) / rect.width;
+      core && core.goTo(Math.round(ratio * (props.items.length - 1)), { user: true });
+    };
+
+    onMounted(() => {
+      core = CinemaCarouselCore.createCarousel({
+        count: props.items.length, initialIndex: props.initialIndex,
+        autoplay: props.autoplay, loop: props.loop,
+      });
+      unsub = core.subscribe((s) => { index.value = s.index; emit('change', s.index); });
+      if (props.autoplay > 0) core.startAutoplay();
+    });
+    onBeforeUnmount(() => { unsub && unsub(); core && core.destroy(); });
+
+    return { index, pad2, cardCls, goTo, onKey, onProgressClick };
+  },
+  template: `
+  <div class="cc-stage" tabindex="0" @keydown.left="onKey(-1)" @keydown.right="onKey(1)">
+    <div class="cc-carousel">
+      <article v-for="(item, i) in items" :key="i" :class="cardCls(i)" @click="goTo(i)">
+        <img class="cc-card__img" :src="item.src" :alt="item.alt || ''" draggable="false">
+        <div class="cc-card__scrim"></div>
+        <header class="cc-card__head">
+          <span class="cc-card__num">{{ pad2(i + 1) }}</span>
+          <span class="cc-card__num cc-card__num--end">{{ pad2(i + 1) }}</span>
+        </header>
+        <p class="cc-card__eyebrow"><span class="cc-dot"></span>{{ item.eyebrow || 'VISUAL IDENTITY' }}</p>
+        <h2 class="cc-card__title">{{ item.title }}</h2>
+        <div class="cc-card__body">
+          <div class="cc-card__info">
+            <span class="cc-card__index">{{ pad2(i + 1) }}</span>
+            <h3 class="cc-card__heading">{{ item.title }}</h3>
+            <p class="cc-card__desc" v-html="(item.desc || '').replace(/\\n/g, '<br>')"></p>
+            <a v-if="item.href" class="cc-card__cta" :href="item.href" @click.stop>
+              View project
+              <span class="cc-card__cta-arrow">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+    <footer v-if="showControls" class="cc-controls">
+      <div class="cc-controls__counter">
+        <span class="cc-counter-current">{{ pad2(index + 1) }}</span>
+        <span class="cc-controls__total">/ {{ pad2(items.length) }}</span>
+      </div>
+      <div class="cc-controls__progress" @click="onProgressClick">
+        <div class="cc-controls__bar" :style="{ width: 100 / items.length + '%', left: (100 / items.length) * index + '%' }"></div>
+      </div>
+      <div class="cc-controls__nav">
+        <button class="cc-nav-btn" aria-label="上一张" :disabled="index === 0 && !loop" @click="onKey(-1)">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M11.5 5.5 7 10l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="cc-nav-btn" aria-label="下一张" :disabled="index === items.length - 1 && !loop" @click="onKey(1)">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M8.5 5.5 13 10l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </footer>
+  </div>`,
+};
+
+createApp({
+  components: { CinemaCarousel },
+  setup() {
+    const onChange = (i) => console.log('active card:', i);
+    return { items, onChange };
+  },
+  template: `
+    <cinema-carousel :items="items" :initial-index="1" :autoplay="4500" @change="onChange" />
+  `,
+}).mount('#app');
+</script>
+</body>
+</html>

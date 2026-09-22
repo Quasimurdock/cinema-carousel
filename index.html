@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinema Carousel — 手风琴轮播（Vanilla 演示）</title>
+<link rel="stylesheet" href="src/cinema-carousel.css">
+<style>
+  html, body { height: 100%; margin: 0; background: var(--cc-bg, #0a0a0a); overflow: hidden; }
+</style>
+</head>
+<body>
+
+<!-- ========== CinemaCarousel vanilla 用法：声明式 HTML + 一行绑定 ========== -->
+<div class="cc-stage" id="stage">
+
+  <div class="cc-carousel">
+    <article class="cc-card">
+      <img class="cc-card__img" src="https://picsum.photos/id/1015/1024/1536" alt="Beyond ordinary">
+      <div class="cc-card__scrim"></div>
+      <header class="cc-card__head">
+        <span class="cc-card__num">01</span>
+        <span class="cc-card__num cc-card__num--end">01</span>
+      </header>
+      <p class="cc-card__eyebrow"><span class="cc-dot"></span>VISUAL IDENTITY</p>
+      <h2 class="cc-card__title">Beyond ordinary.</h2>
+      <div class="cc-card__body">
+        <div class="cc-card__info">
+          <span class="cc-card__index">01</span>
+          <h3 class="cc-card__heading">Beyond ordinary.</h3>
+          <p class="cc-card__desc">Sharp geometry, bold statements.<br>Designed to command attention.</p>
+          <a class="cc-card__cta" href="#">View project <span class="cc-card__cta-arrow"></span></a>
+        </div>
+      </div>
+    </article>
+
+    <article class="cc-card">
+      <img class="cc-card__img" src="https://picsum.photos/id/1016/1024/1536" alt="Soft encounters">
+      <div class="cc-card__scrim"></div>
+      <header class="cc-card__head">
+        <span class="cc-card__num">02</span>
+        <span class="cc-card__num cc-card__num--end">02</span>
+      </header>
+      <p class="cc-card__eyebrow"><span class="cc-dot"></span>VISUAL IDENTITY</p>
+      <h2 class="cc-card__title">Soft encounters.</h2>
+      <div class="cc-card__body">
+        <div class="cc-card__info">
+          <span class="cc-card__index">02</span>
+          <h3 class="cc-card__heading">Soft encounters.</h3>
+          <p class="cc-card__desc">Organic forms meet a clear visual language.<br>Made to feel a little different.</p>
+          <a class="cc-card__cta" href="#">View project <span class="cc-card__cta-arrow"></span></a>
+        </div>
+      </div>
+    </article>
+
+    <article class="cc-card">
+      <img class="cc-card__img" src="https://picsum.photos/id/1018/1024/1536" alt="New dimensions">
+      <div class="cc-card__scrim"></div>
+      <header class="cc-card__head">
+        <span class="cc-card__num">03</span>
+        <span class="cc-card__num cc-card__num--end">03</span>
+      </header>
+      <p class="cc-card__eyebrow"><span class="cc-dot"></span>VISUAL IDENTITY</p>
+      <h2 class="cc-card__title">New dimensions.</h2>
+      <div class="cc-card__body">
+        <div class="cc-card__info">
+          <span class="cc-card__index">03</span>
+          <h3 class="cc-card__heading">New dimensions.</h3>
+          <p class="cc-card__desc">Depth and perspective in every frame.<br>Step into the scene.</p>
+          <a class="cc-card__cta" href="#">View project <span class="cc-card__cta-arrow"></span></a>
+        </div>
+      </div>
+    </article>
+
+    <article class="cc-card">
+      <img class="cc-card__img" src="https://picsum.photos/id/1025/1024/1536" alt="In good shape">
+      <div class="cc-card__scrim"></div>
+      <header class="cc-card__head">
+        <span class="cc-card__num">04</span>
+        <span class="cc-card__num cc-card__num--end">04</span>
+      </header>
+      <p class="cc-card__eyebrow"><span class="cc-dot"></span>VISUAL IDENTITY</p>
+      <h2 class="cc-card__title">In good shape.</h2>
+      <div class="cc-card__body">
+        <div class="cc-card__info">
+          <span class="cc-card__index">04</span>
+          <h3 class="cc-card__heading">In good shape.</h3>
+          <p class="cc-card__desc">Form follows feeling.<br>Contours that carry character.</p>
+          <a class="cc-card__cta" href="#">View project <span class="cc-card__cta-arrow"></span></a>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <footer class="cc-controls">
+    <div class="cc-controls__counter">
+      <span class="cc-counter-current">01</span>
+      <span class="cc-controls__total">/ 04</span>
+    </div>
+    <div class="cc-controls__progress"><div class="cc-controls__bar"></div></div>
+    <div class="cc-controls__nav">
+      <button class="cc-nav-btn cc-prev" aria-label="上一张" disabled>
+        <svg viewBox="0 0 20 20" fill="none"><path d="M11.5 5.5 7 10l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="cc-nav-btn cc-next" aria-label="下一张">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M8.5 5.5 13 10l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </footer>
+</div>
+
+<script src="src/cinema-carousel.core.js"></script>
+<script src="src/adapters/vanilla.js"></script>
+<script>
+  // 一行绑定：声明式 HTML → 完整轮播
+  var demo = CinemaCarouselVanilla.bindCarousel(document.getElementById('stage'), {
+    initialIndex: 1,   // 初始展开第 2 张（对齐原站）
+    autoplay: 4500,    // 4.5s 自动轮播，用户交互后停止
+  });
+</script>
+</body>
+</html>

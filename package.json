@@ -1,0 +1,39 @@
+{
+  "name": "cinema-carousel",
+  "version": "1.0.0",
+  "description": "Accordion carousel inspired by a Framer site — framework-agnostic core with Vanilla / React / Vue3 adapters.",
+  "keywords": [
+    "carousel",
+    "accordion",
+    "slider",
+    "vanilla-js",
+    "react",
+    "vue3",
+    "framer"
+  ],
+  "homepage": "https://quasimurdock.github.io/cinema-carousel/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Quasimurdock/cinema-carousel.git"
+  },
+  "license": "MIT",
+  "author": "Quasimurdock <sh1wnt@outlook.com>",
+  "files": [
+    "src",
+    "examples",
+    "index.html"
+  ],
+  "main": "src/cinema-carousel.core.js",
+  "exports": {
+    ".": "./src/cinema-carousel.core.js",
+    "./core": "./src/cinema-carousel.core.js",
+    "./style.css": "./src/cinema-carousel.css",
+    "./vanilla": "./src/adapters/vanilla.js",
+    "./react": "./src/adapters/CinemaCarousel.jsx",
+    "./vue": "./src/adapters/CinemaCarousel.vue",
+    "./*": "./*"
+  },
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
